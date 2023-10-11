@@ -1,0 +1,388 @@
+---
+title: "Информационно-аналитические технологии поиска угроз информационной безопасности"
+author: "Kabanova Svetlana"
+format: 
+    md:
+        output-file: README.md
+---
+
+# Лабораторная работа №1
+
+## Цель работы
+
+Изучить базовые принципы работы языка R
+
+## Ход работы
+
+### Задание 1: Basic Building Blocks
+
+R can be used as an interactive calculator, for example, 5+7=
+
+```{r}
+5+7
+```
+
+To assign the result of 5 + 7 to a new variable called x, you type x \<- 5 + 7. To view the contents of the variable x.
+
+```{r}
+x<-5+7
+x
+```
+
+Store the result of x - 3 in a new variable called y. What`s the value of y?
+
+```{r}
+y<-x-3
+y
+```
+
+To create a vector containing the numbers 1.1, 9, and 3.14 and store the result in a variable called z.
+
+```{r}
+z<-c(1.1, 9, 3.14)
+```
+         
+If you want more information on the | c() function, type ?c without the parentheses that normally follow a function name.
+
+```{r}
+?c
+```
+
+Type z to view its contents.
+
+```{r}
+z
+```
+
+Create a new vector that contains z, 555, then z again in that order. 
+
+```{r}
+c(z, 555, z)
+```
+
+Numeric vectors can be used in arithmetic expressions.
+
+```{r}
+z*2+100
+```
+
+Take the square root of z - 1 and assign it to a new variable called my_sqrt. And print.
+
+```{r}
+my_sqrt<-sqrt(z-1)
+my_sqrt
+```
+
+Create a new variable called my_div that gets the value of z divided by my_sqrt. Print the contents of my_div.
+
+```{r}
+my_div<-z/my_sqrt
+my_div
+```
+
+To see another example of how this vector 'recycling' works, try adding c(1, 2, 3,
+| 4) and c(0, 10).
+
+```{r}
+c(1, 2, 3, 4)+c(0, 10)
+```
+
+Try c(1, 2, 3, 4) + c(0, 10, 100) for an example.
+
+```{r}
+c(1, 2, 3, 4)+c(0, 10, 100)
+```
+
+Try hitting the up arrow on your keyboard until you get to this command (z * 2 + 100), then change 100 to 1000 and hit Enter.
+
+```{r}
+z*2+1000
+```
+
+You can type the first two letters of the variable name, then hit the Tab key. This is called auto-completion.
+
+### Задание 2: Workspace and Files
+
+Determine which directory your R session is using as its current working directory using getwd().
+
+```{r}
+getwd()
+```
+
+List all the objects in your local workspace using ls().
+
+```{r}
+ls()
+```
+
+Assign 9 to x using x <- 9.
+
+```{r}
+x<-9
+```
+
+Now take a look at objects that are in your workspace using ls().
+
+```{r}
+ls()
+```
+
+List all the files in your working directory using list.files() or dir().
+
+```{r}
+list.files()
+```
+
+Check out the help page for list.files with the command ?list.files.
+
+```{r}
+?list.files
+```
+
+Use the args() function to determine the arguments to list.files().
+
+```{r}
+args(list.files)
+```
+
+Assign the value of the current working directory to a variable called "old.dir".
+
+```{r}
+old.dir <- getwd()
+```
+
+Use dir.create() to create a directory in the current working directory called "testdir".
+
+```{r}
+dir.create("testdir")
+```
+
+Set your working directory to "testdir" with the setwd() command.
+
+```{r}
+setwd("testdir")
+```
+
+Create a file in your working directory called "mytest.R" using the file.create() function.
+
+```{r}
+file.create("mytest.R")
+```
+
+This should be the only file in this newly created directory. Let's check this by listing all the files in the current directory.
+
+```{r}
+list.files()
+```
+
+Check to see if "mytest.R" exists in the working directory using the file.exists() function.
+
+```{r}
+file.exists("mytest.R")
+```
+
+Access information about the file "mytest.R" by using file.info().
+
+```{r}
+file.info("mytest.R")
+```
+
+Change the name of the file "mytest.R" to "mytest2.R" by using file.rename().
+
+```{r}
+file.rename("mytest.R", "mytest2.R")
+```
+
+Make a copy of "mytest2.R" called "mytest3.R" using file.copy().
+
+```{r}
+file.copy("mytest2.R", "mytest3.R")
+```
+
+Provide the relative path to the file "mytest3.R" by using file.path().
+
+```{r}
+file.path("mytest3.R")
+```
+
+You can use file.path to construct file and directory paths that are independent of the operating system your R code is running on. Pass 'folder1' and 'folder2' as arguments to file.path to make a platform-independent pathname.
+
+```{r}
+file.path("folder1", "folder2")
+```
+
+Take a look at the documentation for dir.create by entering ?dir.create .
+
+```{r}
+?dir.create
+```
+
+Create a directory in the current working directory called "testdir2" and a subdirectory for it called "testdir3", all in one command by using dir.create() and file.path().
+
+```{r}
+dir.create(file.path('testdir2', 'testdir3'), recursive = TRUE)
+```
+
+Go back to your original working directory using setwd().
+
+```{r}
+setwd(old.dir)
+```
+
+### Задание 3: Sequences of Numbers
+
+The simplest way to create a sequence of numbers in R is by using the `:` operator. Type 1:20 to see how it works.
+
+```{r}
+1:20
+```
+
+That gave us every integer between (and including) 1 and 20. We could also use it to create a sequence of real numbers. For example, try pi:10.
+
+```{r}
+pi:10
+```
+
+What happens if we do 15:1?
+
+```{r}
+15:1
+```
+
+Pull up the documentation for `:` now.
+
+```{r}
+?`:`
+```
+
+The most basic use of seq() does exactly the same thing as the `:` operator. Try seq(1, 20) to see this.
+
+```{r}
+seq(1,20)
+```
+
+This gives us the same output as 1:20. However, let's say that instead we want a vector of numbers ranging from 0 to 10, incremented by 0.5. seq(0, 10, by=0.5) does just that. Try it out.
+
+```{r}
+seq(0,10, by=0.5)
+```
+
+Or maybe we don't care what the increment is and we just want a sequence of 30 numbers between 5 and 10. seq(5, 10, length=30) does the trick. Give it a shot now and store the result in a new variable called my_seq.
+
+```{r}
+my_seq<-seq(5, 10, length=30)
+```
+
+To confirm that my_seq has length 30, we can use the length() function.
+
+```{r}
+length(my_seq)
+```
+
+There are several ways we could do this. One possibility is to combine the `:` operator and the length() function like this: 1:length(my_seq).
+
+```{r}
+1:length(my_seq)
+```
+
+Another option is to use seq(along.with = my_seq).
+
+```{r}
+seq(along.with = my_seq)
+```
+
+However, as is the case with many common tasks, R has a separate built-in function for this purpose called seq_along(). Type seq_along(my_seq) to see it in action.
+
+```{r}
+seq_along(my_seq)
+```
+
+If we're interested in creating a vector that contains 40 zeros, we can use rep(0, times = 40).
+
+```{r}
+rep(0, times = 40)
+```
+
+If instead we want our vector to contain 10 repetitions of the vector (0, 1, 2), we can do rep(c(0, 1, 2), times = 10).
+
+```{r}
+rep(c(0, 1, 2), times = 10)
+```
+
+Finally, let's say that rather than repeating the vector (0, 1, 2) over and over again, we want our vector to contain 10 zeros, then 10 ones, then 10 twos. We can do this with the `each` argument. Try rep(c(0, 1, 2), each = 10).
+
+```{r}
+rep(c(0, 1, 2), each = 10)
+```
+
+### Задание 4: Vectors
+
+First, create a numeric vector num_vect that contains the values 0.5, 55, -10, and 6.
+
+```{r}
+num_vect<-c(0.5,55,-10,6)
+```
+
+Now, create a variable called tf that gets the result of num_vect < 1. Print.
+
+```{r}
+tf<-num_vect < 1
+tf
+```
+
+Type num_vect >= 6 without assigning the result to a new variable.
+
+```{r}
+num_vect >= 6
+```
+
+Create a character vector that contains the following words: "My", "name", "is". Remember to enclose each word in its own set of double quotes, so that R knows they are character strings. Store the vector in a variable called my_char. Print the contents.
+
+```{r}
+my_char<-c("My", "name", "is")
+my_char
+```
+
+Type paste(my_char, collapse = " ") now. Make sure there's a space between the double quotes in the `collapse` argument.
+
+```{r}
+paste(my_char, collapse = " ")
+```
+
+To add (or 'concatenate') your name to the end of my_char, use the c() function like this: c(my_char, "your_name_here"). Place your name in double quotes where I've put "your_name_here".
+
+```{r}
+my_name <- c(my_char, "Sveta")
+my_name
+```
+
+Now, use the paste() function once more to join the words in my_name together into a single character string.
+
+```{r}
+paste(my_name, collapse = " ")
+```
+
+Try paste("Hello", "world!", sep = " "), where the `sep` argument tells R that we want to separate the joined elements with a single space.
+
+```{r}
+paste("Hello", "world!", sep = " ")
+```
+
+For a slightly more complicated example, we can join two vectors, each of length 3. Use paste() to join the integer vector 1:3 with the character vector c("X", "Y", "Z").
+
+```{r}
+paste(1:3, c("X", "Y", "Z"), sep = "")
+```
+
+Try paste(LETTERS, 1:4, sep = "-"), where LETTERS is a predefined variable in R containing a character vector of all 26 letters in the English alphabet.
+
+```{r}
+paste(LETTERS, 1:4, sep = "-")
+```
+## Оценка результата
+
+В результате лабораторной работы были разобраны базовые аспекты языка программирования R.
+
+## Вывод
+
+Мы получили базовые навыки работы с RStudio Desktop и языком R
