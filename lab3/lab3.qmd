@@ -1,0 +1,137 @@
+---
+title: "Информационно-аналитические технологии поиска угроз информационной безопасности"
+author: "Kabanova Svetlana"
+format: 
+    md:
+        output-file: README.md
+---
+
+# Лабораторная работа №3
+
+Основы обработки данных с помощью R (часть 2)
+
+## Цель работы
+
+1.  Закрепить практические навыки использования языка программирования R для обработки данных
+
+2. Закрепить знания основных функций обработки данных экосистемы tidyverse языка R
+
+3.  Развить пркатические навыки использования функций обработки данных пакета dplyr \-- функции select(), filter(), mutate(), arrange(), group_by()
+
+## Задание (Ход работы)
+
+Проанализировать встроенные в пакет nycflights13 наборы данных с помощью языка R и ответить на вопросы:
+
+```{r}
+install.packages("dplyr") 
+library(dplyr)
+install.packages("nycflights13") 
+library(nycflights13)
+```
+
+### Задание 1.  Сколько встроенных в пакет nycflights13 датафреймов?
+
+nycflights13::
+
+Ответ: 5 датафреймов (airlines, airports, flights, planes, weather)
+
+### Задание 2.  Сколько строк в каждом датафрейме?
+
+```{r}
+library('nycflights13')
+library('dplyr')
+nycflights13::airlines %>% nrow()
+nycflights13::airports %>% nrow()
+nycflights13::flights %>% nrow()
+nycflights13::planes %>% nrow()
+nycflights13::weather %>% nrow()
+```
+
+### Задание 3.  Сколько столбцов в каждом датафрейме?
+
+```{r}
+nycflights13::airlines %>% ncol()
+nycflights13::airports %>% ncol()
+nycflights13::flights %>% ncol()
+nycflights13::planes %>% ncol()
+nycflights13::weather %>% ncol()
+```
+
+### Задание 4.  Как просмотреть примерный вид датафрейма?
+
+```{r}
+nycflights13::airports %>% glimpse()
+```
+
+### Задание 5.  Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных (представлено в наборах данных)?
+
+```{r}
+nycflights13::airlines %>% nrow()
+```
+
+### Задание 6.  Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
+
+```{r}
+z <- filter(flights, month == 5 & origin == 'JFK')
+count(z)
+```
+
+### Задание 7.  Какой самый северный аэропорт?
+
+```{r}
+a <- max(nycflights13::airports$lat, na.rm = TRUE)
+nycflights13::airports %>% select(name,lat) %>% filter(lat==a)
+```
+
+### Задание 8.  Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
+
+```{r}
+nycflights13::airports %>% arrange(desc(alt)) %>% select(name, alt) %>% top_n(1)
+```
+
+### Задание 9.  Какие бортовые номера у самых старых самолетов?
+
+```{r}
+a <- filter(planes, year != 'NA')
+b <- min(a$year)
+c <- filter(planes, year == b)
+select (c, tailnum)
+```
+
+### Задание 10. Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия).
+
+```{r}
+a <- filter(weather, month == 9 , origin == 'JFK', temp != 'NA')
+b <- summarize(a, delay = mean(temp, na.rm = TRUE ))
+c <- 5/9*(b-32)
+c
+```
+
+### Задание 11. Самолеты какой авиакомпании совершили больше всего вылетов в июне?
+
+```{r}
+a <- filter(flights, month == 6, carrier != 'NA', month != 'NA')
+b <- group_by(a, carrier)
+c <- count(b, carrier)
+d <- filter(c, n == max(c$n))
+f <- filter(airlines, carrier == d$carrier)
+f
+```
+
+### Задание 12. Самолеты какой авиакомпании задерживались чаще других в 2013 году?
+
+```{r}
+a <- filter(flights, year == 2013, dep_delay != 'NA', arr_delay != 'NA', arr_delay > 0, dep_delay > 0)
+b <- group_by(a,carrier)
+c <- count(b,carrier)
+d <- filter(c, n == max(c$n))
+f <- filter(airlines, carrier == d$carrier)
+f
+```
+## Оценка результатов
+
+В ходе выполнения лабораторной работы были изучены функции пакета `tidyverse`
+
+## Вывод
+
+Были получены базовые навыки обработки данных с помощью языка R
