@@ -2,8 +2,6 @@
 безопасности
 Kabanova Svetlana
 
-https://github.com/alexsndrovandrey1/R_7sem/tree/a8026c7b7d0fa2df98b58757dc3063d6ae31af58/PR5
-
 # Лабораторная работа №5
 
 Исследование информации о состоянии беспроводных сетей
