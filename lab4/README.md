@@ -24,7 +24,7 @@ Kabanova Svetlana
 1\. Импортируйте данные DNS.
 
 ``` r
-dns_log <- read.csv("/home/irina/threat_hunting_2/lab4/dns.log", header = FALSE, sep = "\t", encoding = "UTF-8")
+dns_log <- read.csv("dns.log", header = FALSE, sep = "\t", encoding = "UTF-8")
 ```
 
 ``` r
@@ -77,7 +77,7 @@ head(dns_log, 10)
     10 C_INTERNET  32  NB   -       - FALSE FALSE  TRUE FALSE   1   -   - FALSE
 
 ``` r
-header <- read.csv("/home/irina/threat_hunting_2/lab4/header.csv")
+header <- read.csv("header.csv")
 ```
 
 ``` r
@@ -402,8 +402,7 @@ head(unique_ips_with_periodic_requests, 10)
 
 ## Оценка результатов
 
-В результате были получены ответы на все поставленные вопросы с помощью
-языка R и библиотеки `dplyr`
+Были получены ответы на все поставленные вопросы с помощью языка R
 
 ## Вывод
 
