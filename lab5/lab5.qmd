@@ -45,13 +45,11 @@ data_2 <- read.csv("mir.csv-01.csv",skip=169)
 ```
 
 ```{r}
-```{r}
 data_1$First.time.seen <- as.POSIXct(data_1$First.time.seen, format = "%Y-%m-%d %H:%M:%S")
 data_1$Last.time.seen <- as.POSIXct(data_1$Last.time.seen, format = "%Y-%m-%d %H:%M:%S")
 
 data_2$First.time.seen <- as.POSIXct(data_2$First.time.seen, format = "%Y-%m-%d %H:%M:%S")
 data_2$Last.time.seen <- as.POSIXct(data_2$Last.time.seen, format = "%Y-%m-%d %H:%M:%S")
-
 
 ```
 
@@ -143,20 +141,44 @@ data_2 %>%
   distinct(BSSID)
 ```
 2\. Обнаружить устройства, которые НЕ рандомизируют свой MAC адрес
+
 ```{r}
-data_2 %>% 
-  select(Station.MAC) %>% 
-  filter(!Station.MAC %in% grep(":",data_2$Station.MAC, value = TRUE)) %>%
-  distinct(Station.MAC)
+data_filtered <- data_2 %>%
+  filter(
+    !grepl("\\(not associated\\)", BSSID) &
+    !Station.MAC %in% grep(":", data_2$Station.MAC, value = TRUE)
+  ) %>%
+  distinct(Station.MAC, .keep_all = TRUE)
+
+print(data_filtered$Station.MAC)
 
 ```
+
+- E8:28:C1 Eltex Enterprise Ltd.
+- 00:25:00 Apple, Inc.
+- 00:26:99 Cisco Systems, Inc
+- 0C:80:63 TP-LINK TECHNOLOGIES CO.,LTD.
+- 08:3A:2F Guangzhou Juan Intelligent Tech Joint Stock Co.,Ltd
+- 00:23:EB Cisco Systems, Inc
+- E0:D9:E3 Eltex Enterprise Ltd.
+- DC:09:4C HUAWEI TECHNOLOGIES CO.,LTD
+- 00:03:7F Atheros Communications, Inc.
+- 00:0D:97 Hitachi Energy USA Inc.
+
+
 3\. Кластеризовать запросы от устройств к точкам доступа по их именам.
 Определить время появления устройства в зоне радиовидимости и время выхода его из нее.
 
 ```{r}
 clustered_data <- data_2 %>%
+  filter(!is.na(Probed.ESSIDs), !is.na(Power), !is.na(First.time.seen), !is.na(Last.time.seen)) %>% 
   group_by(Station.MAC, Probed.ESSIDs) %>%
-  arrange(First.time.seen, Last.time.seen)
+  summarise(
+    "first_appearance" = min(First.time.seen),
+    "last_appearance" = max(Last.time.seen),
+   Power = ifelse(all(is.numeric(as.numeric(Power))), sum(as.numeric(Power)), NA)
+  ) %>%
+  arrange(first_appearance)
 
 clustered_data
 ```
@@ -164,10 +186,20 @@ clustered_data
 
 4\. Оценить стабильность уровня сигнала внури кластера во времени. Выявить наиболее стабильный кластер
 
-## Оценка результатов
-В ходе практической работы были импортированы, подготовлены и проанализированы данные трафика Wi-Fi сетей
+```{r}
+most_stable_cluster <- clustered_data %>%
+  group_by(Station.MAC, Probed.ESSIDs) %>%
+  summarise(Power = mean(Power)) %>%
+  arrange((Power)) %>% 
+  head(1)
 
+most_stable_cluster
+```
+
+
+## Оценка результатов
+
+Были получены ответы на все поставленные вопросы с помощью языка R 
 
 ## Вывод
-Были закреплены навыки работы с пакетом `dplyr`
-
+В ходе практической работы были импортированы, подготовлены и проанализированы данные трафика Wi-Fi сетей

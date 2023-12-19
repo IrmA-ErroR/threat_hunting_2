@@ -557,61 +557,75 @@ data_2 %>%
 2\. Обнаружить устройства, которые НЕ рандомизируют свой MAC адрес
 
 ``` r
-data_2 %>% 
-  select(Station.MAC) %>% 
-  filter(!Station.MAC %in% grep(":",data_2$Station.MAC, value = TRUE)) %>%
-  distinct(Station.MAC)
+data_filtered <- data_2 %>%
+  filter(
+    !grepl("\\(not associated\\)", BSSID) &
+    !Station.MAC %in% grep(":", data_2$Station.MAC, value = TRUE)
+  ) %>%
+  distinct(Station.MAC, .keep_all = TRUE)
+
+print(data_filtered$Station.MAC)
 ```
 
-                                                                            Station.MAC
-    1                                                                        Galaxy A71
-    2                                                                   Galaxy A30s5208
-    3                                                                      C322U06 9080
-    4                                                                             Kesha
-    5                                                                               Дом
-    6                                                                     MIREA_HOTSPOT
-    7                                                                               M26
-    8                                                                           kmkdz_g
-    9                                                                  Moscow_WiFi_Free
-    10                                                         AAAAADVpTWoADwFlRedmi 4X
-    11                                                                    helvetia-free
-    12                                                                     MIREA_GUESTS
-    13                                                                RT-5GHz_WiFi_5756
-    14                                                                     vestis.local
-    15                                                                           -D-13-
-    16                                                                     MGTS_5makmak
-    17                                                                     TP-Link_3144
-    18                                                                               Шк
-    19                                                                AndroidShare_8397
-    20 \\xA7\\xDF\\xA7\\xD1\\xA7\\xE3\\xA7\\xE4\\xA7\\xD6\\xA7\\xE9\\xA7\\xDC\\xA7\\xD1
-    21                                                                AndroidShare_8795
-    22                                                                      home 466_5G
-    23                                                                          MT_FREE
-    24                                                                         Redmi 12
-    25                                                                AndroidShare_2335
-    26                                                                AndroidShare_2061
-    27                                                                        KHRISTAKI
-    28                                                              MTSRouter_5G_142878
-    29                                                                AndroidShare_1901
-    30                                                                       拯救者 Y70
-    31                                                                AndroidShare_1576
-    32                                                                       Beeline121
-    33                                                                          edeeeèe
-    34                                                                               it
-    35                                                                    Snickers_ASSA
-    36                                                                           podval
-    37                                                                         Hornet24
-    38                                                                                1
-    39                                                                        CPPK_Free
-    40                                                                     SevenSky2.4G
-    41                                                                      Timo Resort
-    42                                                                 MTS_GPON5_ac0968
-    43                                                         BgAAAFytPg4AHwF7Redmi 4A
-    44                                                             \\xAC\\xBA\\xAC\\xDC
-    45                                                                             WiFi
-    46                                                                       lenovo_pad
-    47                                                                              RST
-    48                                                                Beeline_5G_F2F425
+     [1] "Galaxy A71"                                                                      
+     [2] "Galaxy A30s5208"                                                                 
+     [3] "C322U06 9080"                                                                    
+     [4] "Kesha"                                                                           
+     [5] "Дом"                                                                             
+     [6] "MIREA_HOTSPOT"                                                                   
+     [7] "M26"                                                                             
+     [8] "kmkdz_g"                                                                         
+     [9] "Moscow_WiFi_Free"                                                                
+    [10] "AAAAADVpTWoADwFlRedmi 4X"                                                        
+    [11] "helvetia-free"                                                                   
+    [12] "MIREA_GUESTS"                                                                    
+    [13] "RT-5GHz_WiFi_5756"                                                               
+    [14] "vestis.local"                                                                    
+    [15] "-D-13-"                                                                          
+    [16] "MGTS_5makmak"                                                                    
+    [17] "TP-Link_3144"                                                                    
+    [18] "Шк"                                                                              
+    [19] "AndroidShare_8397"                                                               
+    [20] "\\xA7\\xDF\\xA7\\xD1\\xA7\\xE3\\xA7\\xE4\\xA7\\xD6\\xA7\\xE9\\xA7\\xDC\\xA7\\xD1"
+    [21] "AndroidShare_8795"                                                               
+    [22] "home 466_5G"                                                                     
+    [23] "MT_FREE"                                                                         
+    [24] "Redmi 12"                                                                        
+    [25] "AndroidShare_2335"                                                               
+    [26] "AndroidShare_2061"                                                               
+    [27] "KHRISTAKI"                                                                       
+    [28] "MTSRouter_5G_142878"                                                             
+    [29] "AndroidShare_1901"                                                               
+    [30] "拯救者 Y70"                                                                      
+    [31] "AndroidShare_1576"                                                               
+    [32] "Beeline121"                                                                      
+    [33] "edeeeèe"                                                                         
+    [34] "it"                                                                              
+    [35] "Snickers_ASSA"                                                                   
+    [36] " podval"                                                                         
+    [37] "Hornet24"                                                                        
+    [38] "1"                                                                               
+    [39] "CPPK_Free"                                                                       
+    [40] "SevenSky2.4G"                                                                    
+    [41] "Timo Resort"                                                                     
+    [42] "MTS_GPON5_ac0968"                                                                
+    [43] "BgAAAFytPg4AHwF7Redmi 4A"                                                        
+    [44] "\\xAC\\xBA\\xAC\\xDC"                                                            
+    [45] "WiFi"                                                                            
+    [46] "lenovo_pad"                                                                      
+    [47] "RST"                                                                             
+    [48] "Beeline_5G_F2F425"                                                               
+
+-   E8:28:C1 Eltex Enterprise Ltd.
+-   00:25:00 Apple, Inc.
+-   00:26:99 Cisco Systems, Inc
+-   0C:80:63 TP-LINK TECHNOLOGIES CO.,LTD.
+-   08:3A:2F Guangzhou Juan Intelligent Tech Joint Stock Co.,Ltd
+-   00:23:EB Cisco Systems, Inc
+-   E0:D9:E3 Eltex Enterprise Ltd.
+-   DC:09:4C HUAWEI TECHNOLOGIES CO.,LTD
+-   00:03:7F Atheros Communications, Inc.
+-   00:0D:97 Hitachi Energy USA Inc.
 
 3\. Кластеризовать запросы от устройств к точкам доступа по их именам.
 Определить время появления устройства в зоне радиовидимости и время
@@ -619,37 +633,68 @@ data_2 %>%
 
 ``` r
 clustered_data <- data_2 %>%
+  filter(!is.na(Probed.ESSIDs), !is.na(Power), !is.na(First.time.seen), !is.na(Last.time.seen)) %>% 
   group_by(Station.MAC, Probed.ESSIDs) %>%
-  arrange(First.time.seen, Last.time.seen)
+  summarise(
+    "first_appearance" = min(First.time.seen),
+    "last_appearance" = max(Last.time.seen),
+   Power = ifelse(all(is.numeric(as.numeric(Power))), sum(as.numeric(Power)), NA)
+  ) %>%
+  arrange(first_appearance)
+```
 
+    `summarise()` has grouped output by 'Station.MAC'. You can override using the
+    `.groups` argument.
+
+``` r
 clustered_data
 ```
 
-    # A tibble: 12,269 × 7
-    # Groups:   Station.MAC, Probed.ESSIDs [12,129]
-       Station.MAC    First.time.seen     Last.time.seen      Power X..packets BSSID
-       <chr>          <dttm>              <dttm>              <chr> <chr>      <chr>
-     1 96:35:2D:3D:8… 2023-07-28 09:13:03 2023-07-28 09:13:03 " -6… "        … " (n…
-     2 CA:66:3B:8F:5… 2023-07-28 09:13:03 2023-07-28 10:59:44 " -3… "      85… " BE…
-     3 5C:3A:45:9E:1… 2023-07-28 09:13:03 2023-07-28 11:51:54 " -3… "      43… " BE…
-     4 C0:E4:34:D8:E… 2023-07-28 09:13:03 2023-07-28 11:53:16 " -6… "      95… " BE…
-     5 5E:8E:A6:5E:3… 2023-07-28 09:13:04 2023-07-28 09:13:04 " -5… "        … " (n…
-     6 10:51:07:CB:3… 2023-07-28 09:13:05 2023-07-28 11:56:06 " -4… "      34… " (n…
-     7 74:4C:A1:70:C… 2023-07-28 09:13:06 2023-07-28 09:20:01 " -7… "        … " E8…
-     8 8A:A3:5A:33:7… 2023-07-28 09:13:06 2023-07-28 10:20:27 " -7… "      11… " 00…
-     9 68:54:5A:40:3… 2023-07-28 09:13:06 2023-07-28 11:50:50 " -3… "      16… " 1E…
-    10 CA:54:C4:8B:B… 2023-07-28 09:13:06 2023-07-28 11:55:04 " -6… "      43… " 00…
-    # ℹ 12,259 more rows
-    # ℹ 1 more variable: Probed.ESSIDs <chr>
+    # A tibble: 12,081 × 5
+    # Groups:   Station.MAC [12,081]
+       Station.MAC       Probed.ESSIDs first_appearance    last_appearance     Power
+       <chr>             <chr>         <dttm>              <dttm>              <dbl>
+     1 5C:3A:45:9E:1A:7B "C322U21 056… 2023-07-28 09:13:03 2023-07-28 11:51:54   -39
+     2 96:35:2D:3D:85:E6 "IT2 Wireles… 2023-07-28 09:13:03 2023-07-28 09:13:03   -65
+     3 C0:E4:34:D8:E7:E5 "C322U13 396… 2023-07-28 09:13:03 2023-07-28 11:53:16   -61
+     4 CA:66:3B:8F:56:DD "C322U13 396… 2023-07-28 09:13:03 2023-07-28 10:59:44   -33
+     5 5E:8E:A6:5E:34:81 ""            2023-07-28 09:13:04 2023-07-28 09:13:04   -53
+     6 10:51:07:CB:33:E7 ""            2023-07-28 09:13:05 2023-07-28 11:56:06   -43
+     7 68:54:5A:40:35:9E "C322U06 517… 2023-07-28 09:13:06 2023-07-28 11:50:50   -31
+     8 74:4C:A1:70:CE:F7 ""            2023-07-28 09:13:06 2023-07-28 09:20:01   -71
+     9 8A:A3:5A:33:76:57 ""            2023-07-28 09:13:06 2023-07-28 10:20:27   -74
+    10 CA:54:C4:8B:B5:3A "GIVC"        2023-07-28 09:13:06 2023-07-28 11:55:04   -65
+    # ℹ 12,071 more rows
 
 4\. Оценить стабильность уровня сигнала внури кластера во времени.
 Выявить наиболее стабильный кластер
 
+``` r
+most_stable_cluster <- clustered_data %>%
+  group_by(Station.MAC, Probed.ESSIDs) %>%
+  summarise(Power = mean(Power)) %>%
+  arrange((Power)) %>% 
+  head(1)
+```
+
+    `summarise()` has grouped output by 'Station.MAC'. You can override using the
+    `.groups` argument.
+
+``` r
+most_stable_cluster
+```
+
+    # A tibble: 1 × 3
+    # Groups:   Station.MAC [1]
+      Station.MAC       Probed.ESSIDs  Power
+      <chr>             <chr>          <dbl>
+    1 8A:45:77:F9:7F:F4 iPhone (Дима )   -89
+
 ## Оценка результатов
 
-В ходе практической работы были импортированы, подготовлены и
-проанализированы данные трафика Wi-Fi сетей
+Были получены ответы на все поставленные вопросы с помощью языка R
 
 ## Вывод
 
-Были закреплены навыки работы с пакетом `dplyr`
+В ходе практической работы были импортированы, подготовлены и
+проанализированы данные трафика Wi-Fi сетей
