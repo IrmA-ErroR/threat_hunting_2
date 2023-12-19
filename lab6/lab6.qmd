@@ -25,26 +25,45 @@ format:
 library(dplyr)
 library(magrittr)
 library(knitr)
+
+library(xml2)
+library(jsonlite)
+library(tidyr)
 ```
 #### Подготовка данных
 
 1\. Импортируйте данные в R. Это можно выполнить с помощью
 jsonlite::stream_in(file()) . Датасет находится по адресу
 https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz.
+
 ```{r}
-library(jsonlite)
+url <- "https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz"
+download.file(url, destfile = tf <- tempfile(fileext = ".tar.gz"), mode = "wb")
+temp_dir <- tempdir()
+untar(tf, exdir = temp_dir)
+json_files <- list.files(temp_dir, pattern="\\.json$", full.names = TRUE, recursive = TRUE)
+json_data <- stream_in(file(json_files))
 ```
 
 ```{r}
-json_data <- stream_in(file("/home/irina/threat_hunting_2/lab6/dataset/caldera_attack_evals_round1_day1_2019-10-20201108.json"))
+# json_data <- stream_in(file("data/caldera_attack_evals_round1_day1_2019-10-20201108.json"))
 ```
 ```{r}
-head(json_data)
+# str(json_data)
 ```
 
 2\. Привести датасеты в вид “аккуратных данных”, преобразовать типы столбцов в соответствии с типом данных
+```{r}
+data <- json_data %>%
+  mutate(`@timestamp` = as.POSIXct(`@timestamp`, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
+  rename(timestamp = `@timestamp`, metadata = `@metadata`)
+```
 
 3\. Просмотрите общую структуру данных с помощью функции glimpse()
+
+```{r}
+glimpse(data)
+```
 
 #### Анализ
 ##### Точки доступа
@@ -54,21 +73,79 @@ head(json_data)
 раскрытии теряются внешние названия колонок – это можно предотвратить
 если использовать параметр tidyr::unnest(..., names_sep = ) .
 
+```{r}
+data <- data %>% 
+  unnest(c(metadata, event, log, winlog, ecs, host, agent), names_sep = ".")
+glimpse(data)
+```
+
 2\. Минимизируйте количество колонок в датафрейме – уберите колоки с
 единственным значением параметра.
+```{r}
+data_clean <- subset(data, 
+  select = - c(
+    metadata.beat, metadata.type,metadata.version,metadata.topic,event.kind,winlog.api,agent.ephemeral_id,agent.hostname,agent.id,agent.version,agent.type))
+
+glimpse(data_clean)
+```
 
 3\. Какое количество хостов представлено в данном датасете?
+
+```{r}
+unique_hosts <- data_clean %>%
+  distinct(host.name)
+
+print(unique_hosts)
+```
 
 4\. Подготовьте датафрейм с расшифровкой Windows Event_ID, приведите типы
 данных к типу их значений.
 
-5\. Есть ли в логе события с высоким и средним уровнем значимости? Сколько их?
+```{r}
+if (!requireNamespace("rvest", quietly = TRUE)) {
+  install.packages("rvest")
+}
 
+library(rvest)
+```
+
+```{r}
+webpage_url <- "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor"
+webpage <- read_html(webpage_url)
+events <- rvest::html_table(webpage)[[1]]
+```
+```{r}
+glimpse(webpage)
+```
+
+```{r}
+glimpse(events)
+```
+
+```{r}
+events <- events %>% 
+  rename(Current_Windows_Event_ID = `Current Windows Event ID`, Legacy_Windows_Event_ID = `Legacy Windows Event ID`, Potential_Criticality = `Potential Criticality`, 
+  Event_Summary = `Event Summary`)
+events$Current_Windows_Event_ID <- as.numeric(events$Current_Windows_Event_ID, na.rm = TRUE)
+```
+
+5\. Есть ли в логе события с высоким и средним уровнем значимости? Сколько их?
+```{r}
+grouped_events <- events %>%
+  group_by(Potential_Criticality) %>%
+  summarise(count = n())
+
+
+grouped_events %>%
+  filter(Potential_Criticality == "High") %>%
+  print()
+```
 
 ## Оценка результатов
 
-
+Были получены ответы на все поставленные вопросы с помощью языка R 
 
 ## Вывод
 
+В результате лабораторной работы была изучена вредоносная активность в домене Windows
 

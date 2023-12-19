@@ -25,11 +25,19 @@ jsonlite::stream_in(file()) . Датасет находится по адрес�
 https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz.
 
 ``` r
-library(jsonlite)
+url <- "https://storage.yandexcloud.net/iamcth-data/dataset.tar.gz"
+download.file(url, destfile = tf <- tempfile(fileext = ".tar.gz"), mode = "wb")
+temp_dir <- tempdir()
+untar(tf, exdir = temp_dir)
 ```
 
+    Warning in untar(tf, exdir = temp_dir): '/bin/tar -xf
+    '/tmp/Rtmp96YpOJ/file9f65c15df4a.tar.gz' -C '/tmp/Rtmp96YpOJ'' returned error
+    code 2
+
 ``` r
-json_data <- stream_in(file("/home/irina/threat_hunting_2/lab6/dataset/caldera_attack_evals_round1_day1_2019-10-20201108.json"))
+json_files <- list.files(temp_dir, pattern="\\.json$", full.names = TRUE, recursive = TRUE)
+json_data <- stream_in(file(json_files))
 ```
 
     opening file input connection.
@@ -244,1022 +252,39 @@ json_data <- stream_in(file("/home/irina/threat_hunting_2/lab6/dataset/caldera_a
     closing file input connection.
 
 ``` r
-head(json_data)
+# json_data <- stream_in(file("data/caldera_attack_evals_round1_day1_2019-10-20201108.json"))
 ```
 
-                    @timestamp @metadata.beat @metadata.type @metadata.version
-    1 2019-10-20T20:11:06.937Z     winlogbeat           _doc             7.4.0
-    2 2019-10-20T20:11:07.101Z     winlogbeat           _doc             7.4.0
-    3 2019-10-20T20:11:09.052Z     winlogbeat           _doc             7.4.0
-    4 2019-10-20T20:11:10.985Z     winlogbeat           _doc             7.4.0
-    5 2019-10-20T20:11:11.249Z     winlogbeat           _doc             7.4.0
-    6 2019-10-20T20:11:15.017Z     winlogbeat           _doc             7.4.0
-      @metadata.topic            event.created event.kind event.code
-    1      winlogbeat 2019-10-20T20:11:09.988Z      event       4703
-    2      winlogbeat 2019-10-20T20:11:09.988Z      event       4673
-    3      winlogbeat 2019-10-20T20:11:11.995Z      event         10
-    4      winlogbeat 2019-10-20T20:11:14.013Z      event         10
-    5      winlogbeat 2019-10-20T20:11:14.013Z      event         10
-    6      winlogbeat 2019-10-20T20:11:18.027Z      event         10
-                                event.action       level
-    1            Token Right Adjusted Events information
-    2                Sensitive Privilege Use information
-    3 Process accessed (rule: ProcessAccess) information
-    4 Process accessed (rule: ProcessAccess) information
-    5 Process accessed (rule: ProcessAccess) information
-    6 Process accessed (rule: ProcessAccess) information
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        message
-    1                                                                                                                                                                                                                                                                                                                                                                                                               A token right was adjusted.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-18\n\tAccount Name:\t\tHR001$\n\tAccount Domain:\t\tshire\n\tLogon ID:\t\t0x3E7\n\nTarget Account:\n\tSecurity ID:\t\tS-1-5-18\n\tAccount Name:\t\tHR001$\n\tAccount Domain:\t\tshire\n\tLogon ID:\t\t0x3E7\n\nProcess Information:\n\tProcess ID:\t\t0x804\n\tProcess Name:\t\tC:\\Windows\\System32\\svchost.exe\n\nEnabled Privileges:\n\t\t\tSeTakeOwnershipPrivilege\n\nDisabled Privileges:\n\t\t\t-
-    2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         A privileged service was called.\n\nSubject:\n\tSecurity ID:\t\tS-1-5-19\n\tAccount Name:\t\tLOCAL SERVICE\n\tAccount Domain:\t\tNT AUTHORITY\n\tLogon ID:\t\t0x3E5\n\nService:\n\tServer:\tSecurity\n\tService Name:\t-\n\nProcess:\n\tProcess ID:\t0x494\n\tProcess Name:\tC:\\Windows\\System32\\svchost.exe\n\nService Request Information:\n\tPrivileges:\t\tSeProfileSingleProcessPrivilege
-    3                                            Process accessed:\nRuleName: \nUtcTime: 2019-10-20 20:11:09.052\nSourceProcessGUID: {a158f72c-afec-5dac-0000-001030640200}\nSourceProcessId: 3556\nSourceThreadId: 3688\nSourceImage: C:\\Windows\\System32\\svchost.exe\nTargetProcessGUID: {a158f72c-afeb-5dac-0000-001082220200}\nTargetProcessId: 3108\nTargetImage: C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe\nGrantedAccess: 0x1400\nCallTrace: C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    4                                            Process accessed:\nRuleName: \nUtcTime: 2019-10-20 20:11:10.985\nSourceProcessGUID: {a158f72c-afe7-5dac-0000-0010044f0200}\nSourceProcessId: 3548\nSourceThreadId: 3660\nSourceImage: C:\\Windows\\System32\\svchost.exe\nTargetProcessGUID: {a158f72c-afe6-5dac-0000-001077030200}\nTargetProcessId: 1968\nTargetImage: C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe\nGrantedAccess: 0x1400\nCallTrace: C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    5                                            Process accessed:\nRuleName: \nUtcTime: 2019-10-20 20:11:11.249\nSourceProcessGUID: {a158f72c-afe6-5dac-0000-00107a640200}\nSourceProcessId: 3632\nSourceThreadId: 3772\nSourceImage: C:\\Windows\\System32\\svchost.exe\nTargetProcessGUID: {a158f72c-afe4-5dac-0000-00104d040200}\nTargetProcessId: 2032\nTargetImage: C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe\nGrantedAccess: 0x1400\nCallTrace: C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    6 Process accessed:\nRuleName: \nUtcTime: 2019-10-20 20:11:15.016\nSourceProcessGUID: {a158f72c-b09e-5dac-0000-0010555c2c00}\nSourceProcessId: 7112\nSourceThreadId: 7004\nSourceImage: C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\MsMpEng.exe\nTargetProcessGUID: {a158f72c-b0a0-5dac-0000-0010810f2d00}\nTargetProcessId: 7592\nTargetImage: C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\NisSrv.exe\nGrantedAccess: 0x1400\nCallTrace: C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\mpsvc.dll+db61b|C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\mpsvc.dll+dec42|C:\\Windows\\System32\\ucrtbase.dll+1d912|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-      winlog.event_data.SubjectDomainName winlog.event_data.TargetDomainName
-    1                               shire                              shire
-    2                        NT AUTHORITY                               <NA>
-    3                                <NA>                               <NA>
-    4                                <NA>                               <NA>
-    5                                <NA>                               <NA>
-    6                                <NA>                               <NA>
-      winlog.event_data.SubjectUserSid winlog.event_data.SubjectUserName
-    1                         S-1-5-18                            HR001$
-    2                         S-1-5-19                     LOCAL SERVICE
-    3                             <NA>                              <NA>
-    4                             <NA>                              <NA>
-    5                             <NA>                              <NA>
-    6                             <NA>                              <NA>
-      winlog.event_data.TargetUserName winlog.event_data.EnabledPrivilegeList
-    1                           HR001$               SeTakeOwnershipPrivilege
-    2                             <NA>                                   <NA>
-    3                             <NA>                                   <NA>
-    4                             <NA>                                   <NA>
-    5                             <NA>                                   <NA>
-    6                             <NA>                                   <NA>
-      winlog.event_data.TargetLogonId      winlog.event_data.ProcessName
-    1                           0x3e7 C:\\Windows\\System32\\svchost.exe
-    2                            <NA> C:\\Windows\\System32\\svchost.exe
-    3                            <NA>                               <NA>
-    4                            <NA>                               <NA>
-    5                            <NA>                               <NA>
-    6                            <NA>                               <NA>
-      winlog.event_data.ProcessId winlog.event_data.SubjectLogonId
-    1                       0x804                            0x3e7
-    2                       0x494                            0x3e5
-    3                        <NA>                             <NA>
-    4                        <NA>                             <NA>
-    5                        <NA>                             <NA>
-    6                        <NA>                             <NA>
-      winlog.event_data.TargetUserSid winlog.event_data.DisabledPrivilegeList
-    1                        S-1-5-18                                       -
-    2                            <NA>                                    <NA>
-    3                            <NA>                                    <NA>
-    4                            <NA>                                    <NA>
-    5                            <NA>                                    <NA>
-    6                            <NA>                                    <NA>
-      winlog.event_data.ObjectServer winlog.event_data.Service
-    1                           <NA>                      <NA>
-    2                       Security                         -
-    3                           <NA>                      <NA>
-    4                           <NA>                      <NA>
-    5                           <NA>                      <NA>
-    6                           <NA>                      <NA>
-      winlog.event_data.PrivilegeList winlog.event_data.TargetProcessId
-    1                            <NA>                              <NA>
-    2 SeProfileSingleProcessPrivilege                              <NA>
-    3                            <NA>                              3108
-    4                            <NA>                              1968
-    5                            <NA>                              2032
-    6                            <NA>                              7592
-      winlog.event_data.SourceProcessId    winlog.event_data.SourceProcessGUID
-    1                              <NA>                                   <NA>
-    2                              <NA>                                   <NA>
-    3                              3556 {a158f72c-afec-5dac-0000-001030640200}
-    4                              3548 {a158f72c-afe7-5dac-0000-0010044f0200}
-    5                              3632 {a158f72c-afe6-5dac-0000-00107a640200}
-    6                              7112 {a158f72c-b09e-5dac-0000-0010555c2c00}
-      winlog.event_data.SourceThreadId
-    1                             <NA>
-    2                             <NA>
-    3                             3688
-    4                             3660
-    5                             3772
-    6                             7004
-                                                           winlog.event_data.SourceImage
-    1                                                                               <NA>
-    2                                                                               <NA>
-    3                                                 C:\\Windows\\System32\\svchost.exe
-    4                                                 C:\\Windows\\System32\\svchost.exe
-    5                                                 C:\\Windows\\System32\\svchost.exe
-    6 C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\MsMpEng.exe
-                                                                                                                                                                                                                                                                                                                                                                                                  winlog.event_data.CallTrace
-    1                                                                                                                                                                                                                                                                                                                                                                                                                    <NA>
-    2                                                                                                                                                                                                                                                                                                                                                                                                                    <NA>
-    3 C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    4 C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    5 C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|c:\\windows\\system32\\rasmans.dll+3751b|c:\\windows\\system32\\rasmans.dll+36fad|c:\\windows\\system32\\rasmans.dll+10ed8|c:\\windows\\system32\\rasmans.dll+33cd5|C:\\Windows\\System32\\svchost.exe+314c|C:\\Windows\\System32\\sechost.dll+2de2|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-    6                             C:\\Windows\\SYSTEM32\\ntdll.dll+9c524|C:\\Windows\\System32\\KERNELBASE.dll+2730e|C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\mpsvc.dll+db61b|C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\mpsvc.dll+dec42|C:\\Windows\\System32\\ucrtbase.dll+1d912|C:\\Windows\\System32\\KERNEL32.DLL+17944|C:\\Windows\\SYSTEM32\\ntdll.dll+6ce71
-         winlog.event_data.TargetProcessGUID
-    1                                   <NA>
-    2                                   <NA>
-    3 {a158f72c-afeb-5dac-0000-001082220200}
-    4 {a158f72c-afe6-5dac-0000-001077030200}
-    5 {a158f72c-afe4-5dac-0000-00104d040200}
-    6 {a158f72c-b0a0-5dac-0000-0010810f2d00}
-                                                          winlog.event_data.TargetImage
-    1                                                                              <NA>
-    2                                                                              <NA>
-    3                        C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe
-    4                        C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe
-    5                        C:\\Program Files\\Amazon\\Ec2ConfigService\\Ec2Config.exe
-    6 C:\\ProgramData\\Microsoft\\Windows Defender\\platform\\4.18.1909.6-0\\NisSrv.exe
-      winlog.event_data.GrantedAccess winlog.event_data.UtcTime
-    1                            <NA>                      <NA>
-    2                            <NA>                      <NA>
-    3                          0x1400   2019-10-20 20:11:09.052
-    4                          0x1400   2019-10-20 20:11:10.985
-    5                          0x1400   2019-10-20 20:11:11.249
-    6                          0x1400   2019-10-20 20:11:15.016
-      winlog.event_data.ProcessGuid winlog.event_data.Image
-    1                          <NA>                    <NA>
-    2                          <NA>                    <NA>
-    3                          <NA>                    <NA>
-    4                          <NA>                    <NA>
-    5                          <NA>                    <NA>
-    6                          <NA>                    <NA>
-      winlog.event_data.TargetFilename winlog.event_data.CreationUtcTime
-    1                             <NA>                              <NA>
-    2                             <NA>                              <NA>
-    3                             <NA>                              <NA>
-    4                             <NA>                              <NA>
-    5                             <NA>                              <NA>
-    6                             <NA>                              <NA>
-      winlog.event_data.FileVersion winlog.event_data.Company
-    1                          <NA>                      <NA>
-    2                          <NA>                      <NA>
-    3                          <NA>                      <NA>
-    4                          <NA>                      <NA>
-    5                          <NA>                      <NA>
-    6                          <NA>                      <NA>
-      winlog.event_data.Signed winlog.event_data.Signature
-    1                     <NA>                        <NA>
-    2                     <NA>                        <NA>
-    3                     <NA>                        <NA>
-    4                     <NA>                        <NA>
-    5                     <NA>                        <NA>
-    6                     <NA>                        <NA>
-      winlog.event_data.OriginalFileName winlog.event_data.Description
-    1                               <NA>                          <NA>
-    2                               <NA>                          <NA>
-    3                               <NA>                          <NA>
-    4                               <NA>                          <NA>
-    5                               <NA>                          <NA>
-    6                               <NA>                          <NA>
-      winlog.event_data.Product winlog.event_data.ImageLoaded
-    1                      <NA>                          <NA>
-    2                      <NA>                          <NA>
-    3                      <NA>                          <NA>
-    4                      <NA>                          <NA>
-    5                      <NA>                          <NA>
-    6                      <NA>                          <NA>
-      winlog.event_data.SignatureStatus winlog.event_data.Hashes
-    1                              <NA>                     <NA>
-    2                              <NA>                     <NA>
-    3                              <NA>                     <NA>
-    4                              <NA>                     <NA>
-    5                              <NA>                     <NA>
-    6                              <NA>                     <NA>
-      winlog.event_data.Status winlog.event_data.Protocol
-    1                     <NA>                       <NA>
-    2                     <NA>                       <NA>
-    3                     <NA>                       <NA>
-    4                     <NA>                       <NA>
-    5                     <NA>                       <NA>
-    6                     <NA>                       <NA>
-      winlog.event_data.FilterRTID winlog.event_data.LayerName
-    1                         <NA>                        <NA>
-    2                         <NA>                        <NA>
-    3                         <NA>                        <NA>
-    4                         <NA>                        <NA>
-    5                         <NA>                        <NA>
-    6                         <NA>                        <NA>
-      winlog.event_data.LayerRTID winlog.event_data.Application
-    1                        <NA>                          <NA>
-    2                        <NA>                          <NA>
-    3                        <NA>                          <NA>
-    4                        <NA>                          <NA>
-    5                        <NA>                          <NA>
-    6                        <NA>                          <NA>
-      winlog.event_data.SourceAddress winlog.event_data.SourcePort
-    1                            <NA>                         <NA>
-    2                            <NA>                         <NA>
-    3                            <NA>                         <NA>
-    4                            <NA>                         <NA>
-    5                            <NA>                         <NA>
-    6                            <NA>                         <NA>
-      winlog.event_data.ProcessID winlog.event_data.DestPort
-    1                        <NA>                       <NA>
-    2                        <NA>                       <NA>
-    3                        <NA>                       <NA>
-    4                        <NA>                       <NA>
-    5                        <NA>                       <NA>
-    6                        <NA>                       <NA>
-      winlog.event_data.RemoteMachineID winlog.event_data.RemoteUserID
-    1                              <NA>                           <NA>
-    2                              <NA>                           <NA>
-    3                              <NA>                           <NA>
-    4                              <NA>                           <NA>
-    5                              <NA>                           <NA>
-    6                              <NA>                           <NA>
-      winlog.event_data.Direction winlog.event_data.DestAddress
-    1                        <NA>                          <NA>
-    2                        <NA>                          <NA>
-    3                        <NA>                          <NA>
-    4                        <NA>                          <NA>
-    5                        <NA>                          <NA>
-    6                        <NA>                          <NA>
-      winlog.event_data.RestrictedAdminMode winlog.event_data.TransmittedServices
-    1                                  <NA>                                  <NA>
-    2                                  <NA>                                  <NA>
-    3                                  <NA>                                  <NA>
-    4                                  <NA>                                  <NA>
-    5                                  <NA>                                  <NA>
-    6                                  <NA>                                  <NA>
-      winlog.event_data.LogonType winlog.event_data.WorkstationName
-    1                        <NA>                              <NA>
-    2                        <NA>                              <NA>
-    3                        <NA>                              <NA>
-    4                        <NA>                              <NA>
-    5                        <NA>                              <NA>
-    6                        <NA>                              <NA>
-      winlog.event_data.LmPackageName winlog.event_data.KeyLength
-    1                            <NA>                        <NA>
-    2                            <NA>                        <NA>
-    3                            <NA>                        <NA>
-    4                            <NA>                        <NA>
-    5                            <NA>                        <NA>
-    6                            <NA>                        <NA>
-      winlog.event_data.LogonGuid winlog.event_data.ImpersonationLevel
-    1                        <NA>                                 <NA>
-    2                        <NA>                                 <NA>
-    3                        <NA>                                 <NA>
-    4                        <NA>                                 <NA>
-    5                        <NA>                                 <NA>
-    6                        <NA>                                 <NA>
-      winlog.event_data.TargetOutboundDomainName
-    1                                       <NA>
-    2                                       <NA>
-    3                                       <NA>
-    4                                       <NA>
-    5                                       <NA>
-    6                                       <NA>
-      winlog.event_data.TargetLinkedLogonId
-    1                                  <NA>
-    2                                  <NA>
-    3                                  <NA>
-    4                                  <NA>
-    5                                  <NA>
-    6                                  <NA>
-      winlog.event_data.AuthenticationPackageName
-    1                                        <NA>
-    2                                        <NA>
-    3                                        <NA>
-    4                                        <NA>
-    5                                        <NA>
-    6                                        <NA>
-      winlog.event_data.TargetOutboundUserName winlog.event_data.VirtualAccount
-    1                                     <NA>                             <NA>
-    2                                     <NA>                             <NA>
-    3                                     <NA>                             <NA>
-    4                                     <NA>                             <NA>
-    5                                     <NA>                             <NA>
-    6                                     <NA>                             <NA>
-      winlog.event_data.IpAddress winlog.event_data.ElevatedToken
-    1                        <NA>                            <NA>
-    2                        <NA>                            <NA>
-    3                        <NA>                            <NA>
-    4                        <NA>                            <NA>
-    5                        <NA>                            <NA>
-    6                        <NA>                            <NA>
-      winlog.event_data.LogonProcessName winlog.event_data.IpPort
-    1                               <NA>                     <NA>
-    2                               <NA>                     <NA>
-    3                               <NA>                     <NA>
-    4                               <NA>                     <NA>
-    5                               <NA>                     <NA>
-    6                               <NA>                     <NA>
-      winlog.event_data.GroupMembership winlog.event_data.EventIdx
-    1                              <NA>                       <NA>
-    2                              <NA>                       <NA>
-    3                              <NA>                       <NA>
-    4                              <NA>                       <NA>
-    5                              <NA>                       <NA>
-    6                              <NA>                       <NA>
-      winlog.event_data.EventCountTotal winlog.event_data.EventType
-    1                              <NA>                        <NA>
-    2                              <NA>                        <NA>
-    3                              <NA>                        <NA>
-    4                              <NA>                        <NA>
-    5                              <NA>                        <NA>
-    6                              <NA>                        <NA>
-      winlog.event_data.TargetObject winlog.event_data.DestinationPort
-    1                           <NA>                              <NA>
-    2                           <NA>                              <NA>
-    3                           <NA>                              <NA>
-    4                           <NA>                              <NA>
-    5                           <NA>                              <NA>
-    6                           <NA>                              <NA>
-      winlog.event_data.DestinationIsIpv6 winlog.event_data.SourceIp
-    1                                <NA>                       <NA>
-    2                                <NA>                       <NA>
-    3                                <NA>                       <NA>
-    4                                <NA>                       <NA>
-    5                                <NA>                       <NA>
-    6                                <NA>                       <NA>
-      winlog.event_data.User winlog.event_data.SourceIsIpv6
-    1                   <NA>                           <NA>
-    2                   <NA>                           <NA>
-    3                   <NA>                           <NA>
-    4                   <NA>                           <NA>
-    5                   <NA>                           <NA>
-    6                   <NA>                           <NA>
-      winlog.event_data.DestinationIp winlog.event_data.SourceHostname
-    1                            <NA>                             <NA>
-    2                            <NA>                             <NA>
-    3                            <NA>                             <NA>
-    4                            <NA>                             <NA>
-    5                            <NA>                             <NA>
-    6                            <NA>                             <NA>
-      winlog.event_data.DestinationHostname winlog.event_data.DestinationPortName
-    1                                  <NA>                                  <NA>
-    2                                  <NA>                                  <NA>
-    3                                  <NA>                                  <NA>
-    4                                  <NA>                                  <NA>
-    5                                  <NA>                                  <NA>
-    6                                  <NA>                                  <NA>
-      winlog.event_data.Initiated winlog.event_data.param3 winlog.event_data.param2
-    1                        <NA>                     <NA>                     <NA>
-    2                        <NA>                     <NA>                     <NA>
-    3                        <NA>                     <NA>                     <NA>
-    4                        <NA>                     <NA>                     <NA>
-    5                        <NA>                     <NA>                     <NA>
-    6                        <NA>                     <NA>                     <NA>
-      winlog.event_data.param1 winlog.event_data.ParentProcessId
-    1                     <NA>                              <NA>
-    2                     <NA>                              <NA>
-    3                     <NA>                              <NA>
-    4                     <NA>                              <NA>
-    5                     <NA>                              <NA>
-    6                     <NA>                              <NA>
-      winlog.event_data.ParentProcessGuid winlog.event_data.ParentCommandLine
-    1                                <NA>                                <NA>
-    2                                <NA>                                <NA>
-    3                                <NA>                                <NA>
-    4                                <NA>                                <NA>
-    5                                <NA>                                <NA>
-    6                                <NA>                                <NA>
-      winlog.event_data.CommandLine winlog.event_data.CurrentDirectory
-    1                          <NA>                               <NA>
-    2                          <NA>                               <NA>
-    3                          <NA>                               <NA>
-    4                          <NA>                               <NA>
-    5                          <NA>                               <NA>
-    6                          <NA>                               <NA>
-      winlog.event_data.TerminalSessionId winlog.event_data.ParentImage
-    1                                <NA>                          <NA>
-    2                                <NA>                          <NA>
-    3                                <NA>                          <NA>
-    4                                <NA>                          <NA>
-    5                                <NA>                          <NA>
-    6                                <NA>                          <NA>
-      winlog.event_data.LogonId winlog.event_data.IntegrityLevel
-    1                      <NA>                             <NA>
-    2                      <NA>                             <NA>
-    3                      <NA>                             <NA>
-    4                      <NA>                             <NA>
-    5                      <NA>                             <NA>
-    6                      <NA>                             <NA>
-      winlog.event_data.PipeName winlog.event_data.ScriptBlockId
-    1                       <NA>                            <NA>
-    2                       <NA>                            <NA>
-    3                       <NA>                            <NA>
-    4                       <NA>                            <NA>
-    5                       <NA>                            <NA>
-    6                       <NA>                            <NA>
-      winlog.event_data.RunspaceId winlog.event_data.ContextInfo
-    1                         <NA>                          <NA>
-    2                         <NA>                          <NA>
-    3                         <NA>                          <NA>
-    4                         <NA>                          <NA>
-    5                         <NA>                          <NA>
-    6                         <NA>                          <NA>
-      winlog.event_data.Payload winlog.event_data.MessageNumber
-    1                      <NA>                            <NA>
-    2                      <NA>                            <NA>
-    3                      <NA>                            <NA>
-    4                      <NA>                            <NA>
-    5                      <NA>                            <NA>
-    6                      <NA>                            <NA>
-      winlog.event_data.MessageTotal winlog.event_data.ScriptBlockText
-    1                           <NA>                              <NA>
-    2                           <NA>                              <NA>
-    3                           <NA>                              <NA>
-    4                           <NA>                              <NA>
-    5                           <NA>                              <NA>
-    6                           <NA>                              <NA>
-      winlog.event_data.NewProcessId winlog.event_data.NewProcessName
-    1                           <NA>                             <NA>
-    2                           <NA>                             <NA>
-    3                           <NA>                             <NA>
-    4                           <NA>                             <NA>
-    5                           <NA>                             <NA>
-    6                           <NA>                             <NA>
-      winlog.event_data.MandatoryLabel winlog.event_data.ParentProcessName
-    1                             <NA>                                <NA>
-    2                             <NA>                                <NA>
-    3                             <NA>                                <NA>
-    4                             <NA>                                <NA>
-    5                             <NA>                                <NA>
-    6                             <NA>                                <NA>
-      winlog.event_data.TokenElevationType winlog.event_data.ServiceName
-    1                                 <NA>                          <NA>
-    2                                 <NA>                          <NA>
-    3                                 <NA>                          <NA>
-    4                                 <NA>                          <NA>
-    5                                 <NA>                          <NA>
-    6                                 <NA>                          <NA>
-      winlog.event_data.ServiceSid winlog.event_data.TicketOptions
-    1                         <NA>                            <NA>
-    2                         <NA>                            <NA>
-    3                         <NA>                            <NA>
-    4                         <NA>                            <NA>
-    5                         <NA>                            <NA>
-    6                         <NA>                            <NA>
-      winlog.event_data.TicketEncryptionType winlog.event_data.QueryName
-    1                                   <NA>                        <NA>
-    2                                   <NA>                        <NA>
-    3                                   <NA>                        <NA>
-    4                                   <NA>                        <NA>
-    5                                   <NA>                        <NA>
-    6                                   <NA>                        <NA>
-      winlog.event_data.QueryStatus winlog.event_data.QueryResults
-    1                          <NA>                           <NA>
-    2                          <NA>                           <NA>
-    3                          <NA>                           <NA>
-    4                          <NA>                           <NA>
-    5                          <NA>                           <NA>
-    6                          <NA>                           <NA>
-      winlog.event_data.SourcePortName winlog.event_data.Device
-    1                             <NA>                     <NA>
-    2                             <NA>                     <NA>
-    3                             <NA>                     <NA>
-    4                             <NA>                     <NA>
-    5                             <NA>                     <NA>
-    6                             <NA>                     <NA>
-      winlog.event_data.Details winlog.event_data.ObjectName
-    1                      <NA>                         <NA>
-    2                      <NA>                         <NA>
-    3                      <NA>                         <NA>
-    4                      <NA>                         <NA>
-    5                      <NA>                         <NA>
-    6                      <NA>                         <NA>
-      winlog.event_data.OldSd winlog.event_data.NewSd winlog.event_data.ObjectType
-    1                    <NA>                    <NA>                         <NA>
-    2                    <NA>                    <NA>                         <NA>
-    3                    <NA>                    <NA>                         <NA>
-    4                    <NA>                    <NA>                         <NA>
-    5                    <NA>                    <NA>                         <NA>
-    6                    <NA>                    <NA>                         <NA>
-      winlog.event_data.HandleId winlog.event_data.ShareName
-    1                       <NA>                        <NA>
-    2                       <NA>                        <NA>
-    3                       <NA>                        <NA>
-    4                       <NA>                        <NA>
-    5                       <NA>                        <NA>
-    6                       <NA>                        <NA>
-      winlog.event_data.AccessList winlog.event_data.ShareLocalPath
-    1                         <NA>                             <NA>
-    2                         <NA>                             <NA>
-    3                         <NA>                             <NA>
-    4                         <NA>                             <NA>
-    5                         <NA>                             <NA>
-    6                         <NA>                             <NA>
-      winlog.event_data.AccessMask winlog.event_data.AccessReason
-    1                         <NA>                           <NA>
-    2                         <NA>                           <NA>
-    3                         <NA>                           <NA>
-    4                         <NA>                           <NA>
-    5                         <NA>                           <NA>
-    6                         <NA>                           <NA>
-      winlog.event_data.RelativeTargetName winlog.event_data.Properties
-    1                                 <NA>                         <NA>
-    2                                 <NA>                         <NA>
-    3                                 <NA>                         <NA>
-    4                                 <NA>                         <NA>
-    5                                 <NA>                         <NA>
-    6                                 <NA>                         <NA>
-      winlog.event_data.AdditionalInfo2 winlog.event_data.OperationType
-    1                              <NA>                            <NA>
-    2                              <NA>                            <NA>
-    3                              <NA>                            <NA>
-    4                              <NA>                            <NA>
-    5                              <NA>                            <NA>
-    6                              <NA>                            <NA>
-      winlog.event_data.AdditionalInfo winlog.event_data.Path
-    1                             <NA>                   <NA>
-    2                             <NA>                   <NA>
-    3                             <NA>                   <NA>
-    4                             <NA>                   <NA>
-    5                             <NA>                   <NA>
-    6                             <NA>                   <NA>
-      winlog.event_data.TargetHandleId winlog.event_data.SourceHandleId
-    1                             <NA>                             <NA>
-    2                             <NA>                             <NA>
-    3                             <NA>                             <NA>
-    4                             <NA>                             <NA>
-    5                             <NA>                             <NA>
-    6                             <NA>                             <NA>
-      winlog.event_data.TransactionId winlog.event_data.RestrictedSidCount
-    1                            <NA>                                 <NA>
-    2                            <NA>                                 <NA>
-    3                            <NA>                                 <NA>
-    4                            <NA>                                 <NA>
-    5                            <NA>                                 <NA>
-    6                            <NA>                                 <NA>
-      winlog.event_data.ResourceAttributes winlog.event_data.Binary
-    1                                 <NA>                     <NA>
-    2                                 <NA>                     <NA>
-    3                                 <NA>                     <NA>
-    4                                 <NA>                     <NA>
-    5                                 <NA>                     <NA>
-    6                                 <NA>                     <NA>
-      winlog.event_data.PreviousCreationUtcTime winlog.event_data.CallerProcessId
-    1                                      <NA>                              <NA>
-    2                                      <NA>                              <NA>
-    3                                      <NA>                              <NA>
-    4                                      <NA>                              <NA>
-    5                                      <NA>                              <NA>
-    6                                      <NA>                              <NA>
-      winlog.event_data.CallerProcessName winlog.event_data.TargetSid
-    1                                <NA>                        <NA>
-    2                                <NA>                        <NA>
-    3                                <NA>                        <NA>
-    4                                <NA>                        <NA>
-    5                                <NA>                        <NA>
-    6                                <NA>                        <NA>
-      winlog.event_data.TaskName winlog.event_data.TaskContentNew
-    1                       <NA>                             <NA>
-    2                       <NA>                             <NA>
-    3                       <NA>                             <NA>
-    4                       <NA>                             <NA>
-    5                       <NA>                             <NA>
-    6                       <NA>                             <NA>
-      winlog.event_data.SourceProcessGuid winlog.event_data.TargetProcessGuid
-    1                                <NA>                                <NA>
-    2                                <NA>                                <NA>
-    3                                <NA>                                <NA>
-    4                                <NA>                                <NA>
-    5                                <NA>                                <NA>
-    6                                <NA>                                <NA>
-      winlog.event_data.StartAddress winlog.event_data.NewThreadId
-    1                           <NA>                          <NA>
-    2                           <NA>                          <NA>
-    3                           <NA>                          <NA>
-    4                           <NA>                          <NA>
-    5                           <NA>                          <NA>
-    6                           <NA>                          <NA>
-      winlog.event_data.TaskContent winlog.event_data.PackageName
-    1                          <NA>                          <NA>
-    2                          <NA>                          <NA>
-    3                          <NA>                          <NA>
-    4                          <NA>                          <NA>
-    5                          <NA>                          <NA>
-    6                          <NA>                          <NA>
-      winlog.event_data.Workstation winlog.event_data.param4
-    1                          <NA>                     <NA>
-    2                          <NA>                     <NA>
-    3                          <NA>                     <NA>
-    4                          <NA>                     <NA>
-    5                          <NA>                     <NA>
-    6                          <NA>                     <NA>
-      winlog.event_data.param5 winlog.event_data.param7
-    1                     <NA>                     <NA>
-    2                     <NA>                     <NA>
-    3                     <NA>                     <NA>
-    4                     <NA>                     <NA>
-    5                     <NA>                     <NA>
-    6                     <NA>                     <NA>
-      winlog.event_data.StartModule winlog.event_data.StartFunction
-    1                          <NA>                            <NA>
-    2                          <NA>                            <NA>
-    3                          <NA>                            <NA>
-    4                          <NA>                            <NA>
-    5                          <NA>                            <NA>
-    6                          <NA>                            <NA>
-      winlog.event_data.TSId winlog.event_data.UserSid
-    1                   <NA>                      <NA>
-    2                   <NA>                      <NA>
-    3                   <NA>                      <NA>
-    4                   <NA>                      <NA>
-    5                   <NA>                      <NA>
-    6                   <NA>                      <NA>
-      winlog.event_data.PreAuthType winlog.event_data.PreviousTime
-    1                          <NA>                           <NA>
-    2                          <NA>                           <NA>
-    3                          <NA>                           <NA>
-    4                          <NA>                           <NA>
-    5                          <NA>                           <NA>
-    6                          <NA>                           <NA>
-      winlog.event_data.NewTime winlog.event_data.InterfaceName
-    1                      <NA>                            <NA>
-    2                      <NA>                            <NA>
-    3                      <NA>                            <NA>
-    4                      <NA>                            <NA>
-    5                      <NA>                            <NA>
-    6                      <NA>                            <NA>
-      winlog.event_data.OldProfile winlog.event_data.NewProfile
-    1                         <NA>                         <NA>
-    2                         <NA>                         <NA>
-    3                         <NA>                         <NA>
-    4                         <NA>                         <NA>
-    5                         <NA>                         <NA>
-    6                         <NA>                         <NA>
-      winlog.event_data.InterfaceGuid winlog.event_data.SettingType
-    1                            <NA>                          <NA>
-    2                            <NA>                          <NA>
-    3                            <NA>                          <NA>
-    4                            <NA>                          <NA>
-    5                            <NA>                          <NA>
-    6                            <NA>                          <NA>
-      winlog.event_data.SettingValueSize winlog.event_data.SettingValue
-    1                               <NA>                           <NA>
-    2                               <NA>                           <NA>
-    3                               <NA>                           <NA>
-    4                               <NA>                           <NA>
-    5                               <NA>                           <NA>
-    6                               <NA>                           <NA>
-      winlog.event_data.SettingValueDisplay winlog.event_data.Origin
-    1                                  <NA>                     <NA>
-    2                                  <NA>                     <NA>
-    3                                  <NA>                     <NA>
-    4                                  <NA>                     <NA>
-    5                                  <NA>                     <NA>
-    6                                  <NA>                     <NA>
-      winlog.event_data.ModifyingUser winlog.event_data.Reason
-    1                            <NA>                     <NA>
-    2                            <NA>                     <NA>
-    3                            <NA>                     <NA>
-    4                            <NA>                     <NA>
-    5                            <NA>                     <NA>
-    6                            <NA>                     <NA>
-      winlog.event_data.OldTime winlog.event_data.DwordVal winlog.event_data.param6
-    1                      <NA>                       <NA>                     <NA>
-    2                      <NA>                       <NA>                     <NA>
-    3                      <NA>                       <NA>                     <NA>
-    4                      <NA>                       <NA>                     <NA>
-    5                      <NA>                       <NA>                     <NA>
-    6                      <NA>                       <NA>                     <NA>
-      winlog.event_data.ShutdownActionType winlog.event_data.ShutdownEventCode
-    1                                 <NA>                                <NA>
-    2                                 <NA>                                <NA>
-    3                                 <NA>                                <NA>
-    4                                 <NA>                                <NA>
-    5                                 <NA>                                <NA>
-    6                                 <NA>                                <NA>
-      winlog.event_data.ShutdownReason winlog.event_data.StopTime
-    1                             <NA>                       <NA>
-    2                             <NA>                       <NA>
-    3                             <NA>                       <NA>
-    4                             <NA>                       <NA>
-    5                             <NA>                       <NA>
-    6                             <NA>                       <NA>
-      winlog.event_data.BootMode winlog.event_data.StartTime
-    1                       <NA>                        <NA>
-    2                       <NA>                        <NA>
-    3                       <NA>                        <NA>
-    4                       <NA>                        <NA>
-    5                       <NA>                        <NA>
-    6                       <NA>                        <NA>
-      winlog.event_data.MajorVersion winlog.event_data.MinorVersion
-    1                           <NA>                           <NA>
-    2                           <NA>                           <NA>
-    3                           <NA>                           <NA>
-    4                           <NA>                           <NA>
-    5                           <NA>                           <NA>
-    6                           <NA>                           <NA>
-      winlog.event_data.BuildVersion winlog.event_data.QfeVersion
-    1                           <NA>                         <NA>
-    2                           <NA>                         <NA>
-    3                           <NA>                         <NA>
-    4                           <NA>                         <NA>
-    5                           <NA>                         <NA>
-    6                           <NA>                         <NA>
-      winlog.event_data.ServiceVersion winlog.event_data.EnableDisableReason
-    1                             <NA>                                  <NA>
-    2                             <NA>                                  <NA>
-    3                             <NA>                                  <NA>
-    4                             <NA>                                  <NA>
-    5                             <NA>                                  <NA>
-    6                             <NA>                                  <NA>
-      winlog.event_data.VsmPolicy winlog.event_data.LastBootGood
-    1                        <NA>                           <NA>
-    2                        <NA>                           <NA>
-    3                        <NA>                           <NA>
-    4                        <NA>                           <NA>
-    5                        <NA>                           <NA>
-    6                        <NA>                           <NA>
-      winlog.event_data.LastBootId winlog.event_data.BootStatusPolicy
-    1                         <NA>                               <NA>
-    2                         <NA>                               <NA>
-    3                         <NA>                               <NA>
-    4                         <NA>                               <NA>
-    5                         <NA>                               <NA>
-    6                         <NA>                               <NA>
-      winlog.event_data.LastShutdownGood winlog.event_data.BootMenuPolicy
-    1                               <NA>                             <NA>
-    2                               <NA>                             <NA>
-    3                               <NA>                             <NA>
-    4                               <NA>                             <NA>
-    5                               <NA>                             <NA>
-    6                               <NA>                             <NA>
-      winlog.event_data.BootType winlog.event_data.LoadOptions
-    1                       <NA>                          <NA>
-    2                       <NA>                          <NA>
-    3                       <NA>                          <NA>
-    4                       <NA>                          <NA>
-    5                       <NA>                          <NA>
-    6                       <NA>                          <NA>
-      winlog.event_data.EntryCount winlog.event_data.BitlockerUserInputTime
-    1                         <NA>                                     <NA>
-    2                         <NA>                                     <NA>
-    3                         <NA>                                     <NA>
-    4                         <NA>                                     <NA>
-    5                         <NA>                                     <NA>
-    6                         <NA>                                     <NA>
-      winlog.event_data.CountNew winlog.event_data.CountOld
-    1                       <NA>                       <NA>
-    2                       <NA>                       <NA>
-    3                       <NA>                       <NA>
-    4                       <NA>                       <NA>
-    5                       <NA>                       <NA>
-    6                       <NA>                       <NA>
-      winlog.event_data.UpdateReason winlog.event_data.EnabledNew
-    1                           <NA>                         <NA>
-    2                           <NA>                         <NA>
-    3                           <NA>                         <NA>
-    4                           <NA>                         <NA>
-    5                           <NA>                         <NA>
-    6                           <NA>                         <NA>
-      winlog.event_data.DeviceNameLength winlog.event_data.DeviceName
-    1                               <NA>                         <NA>
-    2                               <NA>                         <NA>
-    3                               <NA>                         <NA>
-    4                               <NA>                         <NA>
-    5                               <NA>                         <NA>
-    6                               <NA>                         <NA>
-      winlog.event_data.DeviceTime winlog.event_data.FinalStatus
-    1                         <NA>                          <NA>
-    2                         <NA>                          <NA>
-    3                         <NA>                          <NA>
-    4                         <NA>                          <NA>
-    5                         <NA>                          <NA>
-    6                         <NA>                          <NA>
-      winlog.event_data.DeviceVersionMajor winlog.event_data.DeviceVersionMinor
-    1                                 <NA>                                 <NA>
-    2                                 <NA>                                 <NA>
-    3                                 <NA>                                 <NA>
-    4                                 <NA>                                 <NA>
-    5                                 <NA>                                 <NA>
-    6                                 <NA>                                 <NA>
-      winlog.event_data.DriveName winlog.event_data.CorruptionActionState
-    1                        <NA>                                    <NA>
-    2                        <NA>                                    <NA>
-    3                        <NA>                                    <NA>
-    4                        <NA>                                    <NA>
-    5                        <NA>                                    <NA>
-    6                        <NA>                                    <NA>
-      winlog.event_data.State winlog.event_data.MinimumPerformancePercent
-    1                    <NA>                                        <NA>
-    2                    <NA>                                        <NA>
-    3                    <NA>                                        <NA>
-    4                    <NA>                                        <NA>
-    5                    <NA>                                        <NA>
-    6                    <NA>                                        <NA>
-      winlog.event_data.MaximumPerformancePercent
-    1                                        <NA>
-    2                                        <NA>
-    3                                        <NA>
-    4                                        <NA>
-    5                                        <NA>
-    6                                        <NA>
-      winlog.event_data.PerformanceImplementation winlog.event_data.Group
-    1                                        <NA>                    <NA>
-    2                                        <NA>                    <NA>
-    3                                        <NA>                    <NA>
-    4                                        <NA>                    <NA>
-    5                                        <NA>                    <NA>
-    6                                        <NA>                    <NA>
-      winlog.event_data.Number winlog.event_data.IdleStateCount
-    1                     <NA>                             <NA>
-    2                     <NA>                             <NA>
-    3                     <NA>                             <NA>
-    4                     <NA>                             <NA>
-    5                     <NA>                             <NA>
-    6                     <NA>                             <NA>
-      winlog.event_data.IdleImplementation winlog.event_data.NominalFrequency
-    1                                 <NA>                               <NA>
-    2                                 <NA>                               <NA>
-    3                                 <NA>                               <NA>
-    4                                 <NA>                               <NA>
-    5                                 <NA>                               <NA>
-    6                                 <NA>                               <NA>
-      winlog.event_data.MinimumThrottlePercent winlog.event_data.Config
-    1                                     <NA>                     <NA>
-    2                                     <NA>                     <NA>
-    3                                     <NA>                     <NA>
-    4                                     <NA>                     <NA>
-    5                                     <NA>                     <NA>
-    6                                     <NA>                     <NA>
-      winlog.event_data.IsTestConfig winlog.event_data.Default SD String:
-    1                           <NA>                                 <NA>
-    2                           <NA>                                 <NA>
-    3                           <NA>                                 <NA>
-    4                           <NA>                                 <NA>
-    5                           <NA>                                 <NA>
-    6                           <NA>                                 <NA>
-      winlog.event_data.AdapterSuffixName winlog.event_data.DnsServerList
-    1                                <NA>                            <NA>
-    2                                <NA>                            <NA>
-    3                                <NA>                            <NA>
-    4                                <NA>                            <NA>
-    5                                <NA>                            <NA>
-    6                                <NA>                            <NA>
-      winlog.event_data.Sent UpdateServer winlog.event_data.Ipaddress
-    1                                <NA>                        <NA>
-    2                                <NA>                        <NA>
-    3                                <NA>                        <NA>
-    4                                <NA>                        <NA>
-    5                                <NA>                        <NA>
-    6                                <NA>                        <NA>
-      winlog.event_data.ErrorCode winlog.event_data.AdapterName
-    1                        <NA>                          <NA>
-    2                        <NA>                          <NA>
-    3                        <NA>                          <NA>
-    4                        <NA>                          <NA>
-    5                        <NA>                          <NA>
-    6                        <NA>                          <NA>
-      winlog.event_data.HostName winlog.event_data.TimeSource winlog.event_id
-    1                       <NA>                         <NA>            4703
-    2                       <NA>                         <NA>            4673
-    3                       <NA>                         <NA>              10
-    4                       <NA>                         <NA>              10
-    5                       <NA>                         <NA>              10
-    6                       <NA>                         <NA>              10
-                     winlog.provider_name  winlog.api winlog.record_id
-    1 Microsoft-Windows-Security-Auditing wineventlog            50588
-    2 Microsoft-Windows-Security-Auditing wineventlog           104875
-    3            Microsoft-Windows-Sysmon wineventlog           226649
-    4            Microsoft-Windows-Sysmon wineventlog           153525
-    5            Microsoft-Windows-Sysmon wineventlog           163488
-    6            Microsoft-Windows-Sysmon wineventlog           153526
-      winlog.computer_name winlog.process.pid winlog.process.id winlog.keywords
-    1      HR001.shire.com                  4              4108   Audit Success
-    2     HFDC01.shire.com                  4              5144   Audit Failure
-    3      IT001.shire.com               3220              4972            NULL
-    4      HR001.shire.com               3136              4672            NULL
-    5    ACCT001.shire.com               3184              5028            NULL
-    6      HR001.shire.com               3136              4672            NULL
-                        winlog.provider_guid                       winlog.channel
-    1 {54849625-5478-4994-a5ba-3e3b0328c30d}                             security
-    2 {54849625-5478-4994-a5ba-3e3b0328c30d}                             Security
-    3 {5770385f-c22a-43e0-bf4c-06f5698ffbd9} Microsoft-Windows-Sysmon/Operational
-    4 {5770385f-c22a-43e0-bf4c-06f5698ffbd9} Microsoft-Windows-Sysmon/Operational
-    5 {5770385f-c22a-43e0-bf4c-06f5698ffbd9} Microsoft-Windows-Sysmon/Operational
-    6 {5770385f-c22a-43e0-bf4c-06f5698ffbd9} Microsoft-Windows-Sysmon/Operational
-                                 winlog.task winlog.opcode winlog.version
-    1            Token Right Adjusted Events          Info             NA
-    2                Sensitive Privilege Use          Info             NA
-    3 Process accessed (rule: ProcessAccess)          Info              3
-    4 Process accessed (rule: ProcessAccess)          Info              3
-    5 Process accessed (rule: ProcessAccess)          Info              3
-    6 Process accessed (rule: ProcessAccess)          Info              3
-      winlog.user.domain winlog.user.type winlog.user.identifier winlog.user.name
-    1               <NA>             <NA>                   <NA>             <NA>
-    2               <NA>             <NA>                   <NA>             <NA>
-    3       NT AUTHORITY             User               S-1-5-18           SYSTEM
-    4       NT AUTHORITY             User               S-1-5-18           SYSTEM
-    5       NT AUTHORITY             User               S-1-5-18           SYSTEM
-    6       NT AUTHORITY             User               S-1-5-18           SYSTEM
-      winlog.activity_id winlog.user_data.ProcessID winlog.user_data.ProviderPath
-    1               <NA>                       <NA>                          <NA>
-    2               <NA>                       <NA>                          <NA>
-    3               <NA>                       <NA>                          <NA>
-    4               <NA>                       <NA>                          <NA>
-    5               <NA>                       <NA>                          <NA>
-    6               <NA>                       <NA>                          <NA>
-      winlog.user_data.xml_name winlog.user_data.ProviderName winlog.user_data.Code
-    1                      <NA>                          <NA>                  <NA>
-    2                      <NA>                          <NA>                  <NA>
-    3                      <NA>                          <NA>                  <NA>
-    4                      <NA>                          <NA>                  <NA>
-    5                      <NA>                          <NA>                  <NA>
-    6                      <NA>                          <NA>                  <NA>
-      winlog.user_data.HostProcess winlog.user_data.Id
-    1                         <NA>                <NA>
-    2                         <NA>                <NA>
-    3                         <NA>                <NA>
-    4                         <NA>                <NA>
-    5                         <NA>                <NA>
-    6                         <NA>                <NA>
-      winlog.user_data.PossibleCause winlog.user_data.ClientProcessId
-    1                           <NA>                             <NA>
-    2                           <NA>                             <NA>
-    3                           <NA>                             <NA>
-    4                           <NA>                             <NA>
-    5                           <NA>                             <NA>
-    6                           <NA>                             <NA>
-      winlog.user_data.Component winlog.user_data.Operation winlog.user_data.User
-    1                       <NA>                       <NA>                  <NA>
-    2                       <NA>                       <NA>                  <NA>
-    3                       <NA>                       <NA>                  <NA>
-    4                       <NA>                       <NA>                  <NA>
-    5                       <NA>                       <NA>                  <NA>
-    6                       <NA>                       <NA>                  <NA>
-      winlog.user_data.ResultCode winlog.user_data.ClientMachine
-    1                        <NA>                           <NA>
-    2                        <NA>                           <NA>
-    3                        <NA>                           <NA>
-    4                        <NA>                           <NA>
-    5                        <NA>                           <NA>
-    6                        <NA>                           <NA>
-      winlog.user_data.SessionID winlog.user_data.ESS winlog.user_data.CONSUMER
-    1                       <NA>                 <NA>                      <NA>
-    2                       <NA>                 <NA>                      <NA>
-    3                       <NA>                 <NA>                      <NA>
-    4                       <NA>                 <NA>                      <NA>
-    5                       <NA>                 <NA>                      <NA>
-    6                       <NA>                 <NA>                      <NA>
-      winlog.user_data.Namespace winlog.user_data.Processid
-    1                       <NA>                       <NA>
-    2                       <NA>                       <NA>
-    3                       <NA>                       <NA>
-    4                       <NA>                       <NA>
-    5                       <NA>                       <NA>
-    6                       <NA>                       <NA>
-      winlog.user_data.NamespaceName winlog.user_data.Query
-    1                           <NA>                   <NA>
-    2                           <NA>                   <NA>
-    3                           <NA>                   <NA>
-    4                           <NA>                   <NA>
-    5                           <NA>                   <NA>
-    6                           <NA>                   <NA>
-      winlog.user_data.Provider winlog.user_data.queryid winlog.user_data.Session
-    1                      <NA>                     <NA>                     <NA>
-    2                      <NA>                     <NA>                     <NA>
-    3                      <NA>                     <NA>                     <NA>
-    4                      <NA>                     <NA>                     <NA>
-    5                      <NA>                     <NA>                     <NA>
-    6                      <NA>                     <NA>                     <NA>
-      winlog.user_data.Reason winlog.user_data.Address winlog.user_data.messageName
-    1                    <NA>                     <NA>                         <NA>
-    2                    <NA>                     <NA>                         <NA>
-    3                    <NA>                     <NA>                         <NA>
-    4                    <NA>                     <NA>                         <NA>
-    5                    <NA>                     <NA>                         <NA>
-    6                    <NA>                     <NA>                         <NA>
-      winlog.user_data.ListenerName winlog.user_data.Class
-    1                          <NA>                   <NA>
-    2                          <NA>                   <NA>
-    3                          <NA>                   <NA>
-    4                          <NA>                   <NA>
-    5                          <NA>                   <NA>
-    6                          <NA>                   <NA>
-      winlog.user_data.listenerName version      name
-    1                          <NA>   1.1.0 WECServer
-    2                          <NA>   1.1.0 WECServer
-    3                          <NA>   1.1.0 WECServer
-    4                          <NA>   1.1.0 WECServer
-    5                          <NA>   1.1.0 WECServer
-    6                          <NA>   1.1.0 WECServer
-                        agent.ephemeral_id agent.hostname
-    1 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-    2 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-    3 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-    4 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-    5 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-    6 b372be1f-ba0a-4d7e-b4df-79eac86e1fde      WECServer
-                                  agent.id agent.version agent.type
-    1 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
-    2 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
-    3 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
-    4 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
-    5 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
-    6 d347d9a4-bff4-476c-b5a4-d51119f78250         7.4.0 winlogbeat
+``` r
+# str(json_data)
+```
 
 2\. Привести датасеты в вид “аккуратных данных”, преобразовать типы
 столбцов в соответствии с типом данных
 
+``` r
+data <- json_data %>%
+  mutate(`@timestamp` = as.POSIXct(`@timestamp`, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC")) %>%
+  rename(timestamp = `@timestamp`, metadata = `@metadata`)
+```
+
 3\. Просмотрите общую структуру данных с помощью функции glimpse()
+
+``` r
+glimpse(data)
+```
+
+    Rows: 101,904
+    Columns: 9
+    $ timestamp <dttm> 2019-10-20 20:11:06, 2019-10-20 20:11:07, 2019-10-20 20:11:…
+    $ metadata  <df[,4]> <data.frame[26 x 4]>
+    $ event     <df[,4]> <data.frame[26 x 4]>
+    $ log       <df[,1]> <data.frame[26 x 1]>
+    $ message   <chr> "A token right was adjusted.\n\nSubject:\n\tSecurity ID:\…
+    $ winlog    <df[,16]> <data.frame[26 x 16]>
+    $ ecs       <df[,1]> <data.frame[26 x 1]>
+    $ host      <df[,1]> <data.frame[26 x 1]>
+    $ agent     <df[,5]> <data.frame[26 x 5]>
 
 #### Анализ
 
@@ -1271,17 +296,170 @@ head(json_data)
 раскрытии теряются внешние названия колонок – это можно предотвратить
 если использовать параметр tidyr::unnest(…, names_sep = ) .
 
+``` r
+data <- data %>% 
+  unnest(c(metadata, event, log, winlog, ecs, host, agent), names_sep = ".")
+glimpse(data)
+```
+
+    Rows: 101,904
+    Columns: 34
+    $ timestamp            <dttm> 2019-10-20 20:11:06, 2019-10-20 20:11:07, 2019-1…
+    $ metadata.beat        <chr> "winlogbeat", "winlogbeat", "winlogbeat", "winlog…
+    $ metadata.type        <chr> "_doc", "_doc", "_doc", "_doc", "_doc", "_doc", "…
+    $ metadata.version     <chr> "7.4.0", "7.4.0", "7.4.0", "7.4.0", "7.4.0", "7.4…
+    $ metadata.topic       <chr> "winlogbeat", "winlogbeat", "winlogbeat", "winlog…
+    $ event.created        <chr> "2019-10-20T20:11:09.988Z", "2019-10-20T20:11:09.…
+    $ event.kind           <chr> "event", "event", "event", "event", "event", "eve…
+    $ event.code           <int> 4703, 4673, 10, 10, 10, 10, 11, 10, 10, 10, 10, 7…
+    $ event.action         <chr> "Token Right Adjusted Events", "Sensitive Privile…
+    $ log.level            <chr> "information", "information", "information", "inf…
+    $ message              <chr> "A token right was adjusted.\n\nSubject:\n\tSecur…
+    $ winlog.event_data    <df[,234]> <data.frame[26 x 234]>
+    $ winlog.event_id      <int> 4703, 4673, 10, 10, 10, 10, 11, 10, 10, 10, …
+    $ winlog.provider_name <chr> "Microsoft-Windows-Security-Auditing", "Microsoft…
+    $ winlog.api           <chr> "wineventlog", "wineventlog", "wineventlog", "win…
+    $ winlog.record_id     <int> 50588, 104875, 226649, 153525, 163488, 153526, 13…
+    $ winlog.computer_name <chr> "HR001.shire.com", "HFDC01.shire.com", "IT001.shi…
+    $ winlog.process       <df[,2]> <data.frame[26 x 2]>
+    $ winlog.keywords      <list> "Audit Success", "Audit Failure", <NULL>, <NULL>,…
+    $ winlog.provider_guid <chr> "{54849625-5478-4994-a5ba-3e3b0328c30d}", "{54…
+    $ winlog.channel       <chr> "security", "Security", "Microsoft-Windows-Sysmo…
+    $ winlog.task          <chr> "Token Right Adjusted Events", "Sensitive Privile…
+    $ winlog.opcode        <chr> "Info", "Info", "Info", "Info", "Info", "Info", "…
+    $ winlog.version       <int> NA, NA, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, NA, 3…
+    $ winlog.user          <df[,4]> <data.frame[26 x 4]>
+    $ winlog.activity_id   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+    $ winlog.user_data     <df[,30]> <data.frame[26 x 30]>
+    $ ecs.version          <chr> "1.1.0", "1.1.0", "1.1.0", "1.1.0", "1.1.0", "1.1…
+    $ host.name            <chr> "WECServer", "WECServer", "WECServer", "WECSer…
+    $ agent.ephemeral_id   <chr> "b372be1f-ba0a-4d7e-b4df-79eac86e1fde", "b372be1f…
+    $ agent.hostname       <chr> "WECServer", "WECServer", "WECServer", "WECSe…
+    $ agent.id             <chr> "d347d9a4-bff4-476c-b5a4-d51119f78250", "d347d9a4…
+    $ agent.version        <chr> "7.4.0", "7.4.0", "7.4.0", "7.4.0", "7.4.0", "7.4…
+    $ agent.type           <chr> "winlogbeat", "winlogbeat", "winlogbeat", "winlog…
+
 2\. Минимизируйте количество колонок в датафрейме – уберите колоки с
 единственным значением параметра.
 
+``` r
+data_clean <- subset(data, 
+  select = - c(
+    metadata.beat, metadata.type,metadata.version,metadata.topic,event.kind,winlog.api,agent.ephemeral_id,agent.hostname,agent.id,agent.version,agent.type))
+
+glimpse(data_clean)
+```
+
+    Rows: 101,904
+    Columns: 23
+    $ timestamp            <dttm> 2019-10-20 20:11:06, 2019-10-20 20:11:07, 2019-1…
+    $ event.created        <chr> "2019-10-20T20:11:09.988Z", "2019-10-20T20:11:09.…
+    $ event.code           <int> 4703, 4673, 10, 10, 10, 10, 11, 10, 10, 10, 10, 7…
+    $ event.action         <chr> "Token Right Adjusted Events", "Sensitive Privile…
+    $ log.level            <chr> "information", "information", "information", "inf…
+    $ message              <chr> "A token right was adjusted.\n\nSubject:\n\tSecur…
+    $ winlog.event_data    <df[,234]> <data.frame[26 x 234]>
+    $ winlog.event_id      <int> 4703, 4673, 10, 10, 10, 10, 11, 10, 10, 10, …
+    $ winlog.provider_name <chr> "Microsoft-Windows-Security-Auditing", "Microsoft…
+    $ winlog.record_id     <int> 50588, 104875, 226649, 153525, 163488, 153526, 13…
+    $ winlog.computer_name <chr> "HR001.shire.com", "HFDC01.shire.com", "IT001.shi…
+    $ winlog.process       <df[,2]> <data.frame[26 x 2]>
+    $ winlog.keywords      <list> "Audit Success", "Audit Failure", <NULL>, <NULL>,…
+    $ winlog.provider_guid <chr> "{54849625-5478-4994-a5ba-3e3b0328c30d}", "{54…
+    $ winlog.channel       <chr> "security", "Security", "Microsoft-Windows-Sysmo…
+    $ winlog.task          <chr> "Token Right Adjusted Events", "Sensitive Privile…
+    $ winlog.opcode        <chr> "Info", "Info", "Info", "Info", "Info", "Info", "…
+    $ winlog.version       <int> NA, NA, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, NA, 3…
+    $ winlog.user          <df[,4]> <data.frame[26 x 4]>
+    $ winlog.activity_id   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+    $ winlog.user_data     <df[,30]> <data.frame[26 x 30]>
+    $ ecs.version          <chr> "1.1.0", "1.1.0", "1.1.0", "1.1.0", "1.1.0", "1.1…
+    $ host.name            <chr> "WECServer", "WECServer", "WECServer", "WECSer…
+
 3\. Какое количество хостов представлено в данном датасете?
+
+``` r
+unique_hosts <- data_clean %>%
+  distinct(host.name)
+
+print(unique_hosts)
+```
+
+    # A tibble: 1 × 1
+      host.name
+      <chr>    
+    1 WECServer
 
 4\. Подготовьте датафрейм с расшифровкой Windows Event_ID, приведите
 типы данных к типу их значений.
 
+``` r
+if (!requireNamespace("rvest", quietly = TRUE)) {
+  install.packages("rvest")
+}
+
+library(rvest)
+```
+
+``` r
+webpage_url <- "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor"
+webpage <- read_html(webpage_url)
+events <- rvest::html_table(webpage)[[1]]
+```
+
+``` r
+glimpse(webpage)
+```
+
+    List of 2
+     $ node:<externalptr> 
+     $ doc :<externalptr> 
+     - attr(*, "class")= chr [1:2] "xml_document" "xml_node"
+
+``` r
+glimpse(events)
+```
+
+    Rows: 381
+    Columns: 4
+    $ `Current Windows Event ID` <chr> "4618", "4649", "4719", "4765", "4766", "47…
+    $ `Legacy Windows Event ID`  <chr> "N/A", "N/A", "612", "N/A", "N/A", "N/A", "…
+    $ `Potential Criticality`    <chr> "High", "High", "High", "High", "High", "Hi…
+    $ `Event Summary`            <chr> "A monitored security event pattern has occ…
+
+``` r
+events <- events %>% 
+  rename(Current_Windows_Event_ID = `Current Windows Event ID`, Legacy_Windows_Event_ID = `Legacy Windows Event ID`, Potential_Criticality = `Potential Criticality`, 
+  Event_Summary = `Event Summary`)
+events$Current_Windows_Event_ID <- as.numeric(events$Current_Windows_Event_ID, na.rm = TRUE)
+```
+
+    Warning: NAs introduced by coercion
+
 5\. Есть ли в логе события с высоким и средним уровнем значимости?
 Сколько их?
 
+``` r
+grouped_events <- events %>%
+  group_by(Potential_Criticality) %>%
+  summarise(count = n())
+
+
+grouped_events %>%
+  filter(Potential_Criticality == "High") %>%
+  print()
+```
+
+    # A tibble: 1 × 2
+      Potential_Criticality count
+      <chr>                 <int>
+    1 High                      9
+
 ## Оценка результатов
 
+Были получены ответы на все поставленные вопросы с помощью языка R
+
 ## Вывод
+
+В результате лабораторной работы была изучена вредоносная активность в
+домене Windows
